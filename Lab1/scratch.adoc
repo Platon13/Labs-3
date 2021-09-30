@@ -1,6 +1,7 @@
 
 :imagesdir: images
 
+:title-page:
 
 =  Отчет по лабораторной работе №1
 
