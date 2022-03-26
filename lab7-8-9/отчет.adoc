@@ -135,7 +135,7 @@ public:
 }
 ;
 
-Класс All
+===Класс All (режим Моргунчик)
 
 [source,c]
 #pragma once
