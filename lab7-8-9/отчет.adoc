@@ -137,6 +137,8 @@ void Option2()
 
 === Класс Button (для кнопки)
 
+Так же как и для класса Leds, вводим функцию delay и пустую ассемблерную процедуру asm volatile(""), настраиваем кнопку, настраиваем регистр IDR, который будет отвечать за считывание значений порта
+
 [source, c]
 #pragma once
 #include "gpiocregisters.hpp"
@@ -204,6 +206,35 @@ public:
 === Класс Chess (режим Шахматы)
 Класс Chess реализован для попеременного моргания 1 и 3, 2 и 4 светодиодов.
 
+Ссылаемся на контейнер TLeds
+
+[source, c]
+template <auto& TLeds>
+
+Далее наследуем публичный класс IMode
+
+[source, c]
+class Chess : public IMode
+
+Поскольку переопределяем метод абстрактного класса IMode, то нужен override
+
+[source, c]
+void toggle() const override 
+
+Затем реализуем метод init для затушения светодиодов
+
+[source, c]
+for ( uint32_t index =0; index < std::size(TLeds.pLeds); ++index) 
+
+Далее, если получаем остаток от деления, равный нулю, переключаем светодиоды
+
+[source, c]
+if ((index %2)==0) 
+    {
+     TLeds.pLeds[index]->toggle(); 
+    }
+
+
 [source, c]
 #pragma once
 #include "imode.h"
@@ -211,15 +242,15 @@ template <auto& TLeds> // ссылка на контейнер TLeds
 class Chess : public IMode // класс chess наследует публичный класс IMode
 {
 public:
-  void toggle() const override // поскольку переопределяем метод абстрактного класса IMode, то нужен override
+  void toggle() const override 
  {
    TLeds.toggle(); // 
  }
   void init() const override
  {
-    for ( uint32_t index =0; index < std::size(TLeds.pLeds); ++index) // реализация метода init для затушения светодиодов
+    for ( uint32_t index =0; index < std::size(TLeds.pLeds); ++index) 
   {
-   if ((index %2)==0) // елси остаток от деления = 0 
+   if ((index %2)==0) // если остаток от деления = 0 
     {
      TLeds.pLeds[index]->toggle(); // то надо переключить светодиоды
     }
