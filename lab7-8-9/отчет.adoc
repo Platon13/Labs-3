@@ -315,7 +315,7 @@ private:
 
 Осталось представить код функции main. В функции main подключаем библиотеки для таймера:
 
-
+[source, c]
 #include "tim2registers.hpp"   //for SPI2
 #include "nvicregisters.hpp"  //for NVIC
 
@@ -324,8 +324,10 @@ private:
 
 Настройка таймера 2
 
+[source, c]
     RCC::APB1ENR::TIM2EN::Enable::Set();
     TIM2::PSC::Write(TimerPrescaler);   //TimerPrescaler = 16
+    
     
     
 Для организации задержки необходимо:
@@ -350,6 +352,7 @@ private:
 
 Осталось проделать вышеперечисленные операции, создав функцию задержки. Создаем функцию задержки delayMs с использованием таймера:
 
+[source, c]
 void delayMs(uint32_t value)
 {
   const auto delay = (TimerClock * value) / 1000U ; //check
