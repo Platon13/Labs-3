@@ -285,6 +285,7 @@ private:
 Как только флаг установлен остановить счетчик, сбросить бит EN в регистре CR1, Сбросить флаг генерации прерывания UIF по событию в регистре SR
 
 Осталось проделать вышеперечисленные операции, создав функцию задержки. Создаем функцию задержки delayMs с использованием таймера:
+
 void delayMs(uint32_t value)
 {
   const auto delay = (TimerClock * value) / 1000U ; //check
@@ -297,6 +298,7 @@ void delayMs(uint32_t value)
     }
   TIM2::SR::UIF::NoInterruptPending::Set();
   TIM2::CR1::CEN::Disable::Set();
+  
 
 === Код Main
 
