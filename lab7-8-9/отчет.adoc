@@ -257,13 +257,19 @@ private:
 
 Осталось представить код функции main. В функции main подключаем библиотеки для таймера:
 
+
 #include "tim2registers.hpp"   //for SPI2
 #include "nvicregisters.hpp"  //for NVIC
+
+
 Также необходимо настроить таймер:
 
-//Настройка таймера 2
+Настройка таймера 2
+
     RCC::APB1ENR::TIM2EN::Enable::Set();
     TIM2::PSC::Write(TimerPrescaler);   //TimerPrescaler = 16
+    
+    
 Для организации задержки необходимо:
 
 Подать тактирование на модуль таймера
