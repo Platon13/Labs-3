@@ -255,6 +255,49 @@ private:
  }
 ;
 
+Осталось представить код функции main. В функции main подключаем библиотеки для таймера:
+
+#include "tim2registers.hpp"   //for SPI2
+#include "nvicregisters.hpp"  //for NVIC
+Также необходимо настроить таймер:
+
+//Настройка таймера 2
+    RCC::APB1ENR::TIM2EN::Enable::Set();
+    TIM2::PSC::Write(TimerPrescaler);   //TimerPrescaler = 16
+Для организации задержки необходимо:
+
+Подать тактирование на модуль таймера
+
+Установить делитель частоты для таймера в регистре PSC
+
+Установить источник генерации прерываний по событию переполнение с помощью бита URS в регистре CR1
+
+Установить значение до которого счетчик будет считать в регистре перезагрузке ARR
+
+Скинуть флаг генерации прерывания UIF по событию в регистре SR
+
+Установить начальное значение счетчика в 0 в регистре CNT
+
+Запустить счетчик с помощью бита EN в регистре CR1
+
+Проверять пока не будет установлен флаг генерации прерывания по событию UIF в регистре SR
+
+Как только флаг установлен остановить счетчик, сбросить бит EN в регистре CR1, Сбросить флаг генерации прерывания UIF по событию в регистре SR
+
+Осталось проделать вышеперечисленные операции, создав функцию задержки. Создаем функцию задержки delayMs с использованием таймера:
+void delayMs(uint32_t value)
+{
+  const auto delay = (TimerClock * value) / 1000U ; //check
+  TIM2::ARR::Write(delay);
+  TIM2::SR::UIF::NoInterruptPending::Set();
+  TIM2::CNT::Write(0U);
+  TIM2::CR1::CEN::Enable::Set();
+  while(TIM2::SR::UIF::NoInterruptPending::IsSet())
+    {
+    }
+  TIM2::SR::UIF::NoInterruptPending::Set();
+  TIM2::CR1::CEN::Disable::Set();
+
 === Код Main
 
 [source, c]
@@ -305,7 +348,7 @@ extern "C"
   GPIOC::MODER::MODER9::Output::Set();
    //âòîðîé òàéìåð
     RCC::APB1ENR::TIM2EN::Enable::Set();
-    TIM2::PSC::Write(TimerPrescaler);
+    TIM2::PSC::Write(TimerPrescaler); //TimerPrescaler = 16
   return 1;
  }
 }
