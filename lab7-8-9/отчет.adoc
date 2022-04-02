@@ -167,6 +167,7 @@ bool IsPressed()
 
 === Класс Led
 
+В параметре template указывается имя и номер порта.
 
 [source, c]
 #pragma once
@@ -175,7 +176,7 @@ template<typename Port, uint32_t pinNum>
 class Led
 {
 public:
-  void Toggle(); // публичный метод toogle
+  void Toggle(); // публичный метод toogle, который вкл и выкл светодиоды
   {
    Port::BSRR::Write(pinNum << 16);
   }
